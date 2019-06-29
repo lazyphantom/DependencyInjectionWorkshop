@@ -2,24 +2,29 @@
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public class AuthenticationService
+    public interface IAuthenticationService
+    {
+        bool Verify(string account, string password, string otp);
+    }
+
+
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
         private readonly IFailedCounter _failedCounter;
         private readonly IOtpService _otpService;
-        private readonly INotification _notification;
+        
         private readonly ILogger _logger;
 
         public AuthenticationService(IProfile profile, IHash hash,
-            IFailedCounter failedCounter, IOtpService otpService, INotification notification,
+            IFailedCounter failedCounter, IOtpService otpService,
             ILogger logger)
         {
             _profile = profile;
             _hash = hash;
             _failedCounter = failedCounter;
             _otpService = otpService;
-            _notification = notification;
             _logger = logger;
         }
 
@@ -29,7 +34,6 @@ namespace DependencyInjectionWorkshop.Models
             _hash = new Hash();
             _failedCounter = new FailedCounter();
             _otpService = new OtpService();
-            _notification = new Notification();
             _logger = new NLogAdapter();
         }
 
@@ -57,7 +61,7 @@ namespace DependencyInjectionWorkshop.Models
 
             #endregion
 
-            _notification.PushMessage(account);
+            //NotificationDecorator.VerifyWithNotification(account, _notification);
 
             _failedCounter.AddFailedCount(account);
 
