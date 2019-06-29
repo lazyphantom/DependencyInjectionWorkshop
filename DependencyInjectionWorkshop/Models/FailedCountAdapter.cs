@@ -12,7 +12,7 @@ namespace DependencyInjectionWorkshop.Models
         void AddFailedCount(string account);
         bool IsAccountLocked(string account);
         void ResetFailedCount(string account);
-        int GetFailedCount(string account);
+        string GetFailedCount(string account);
     }
 
     public class FailedCounter : IFailedCounter
@@ -52,11 +52,11 @@ namespace DependencyInjectionWorkshop.Models
             #endregion
         }
 
-        public int GetFailedCount(string account)
+        public string GetFailedCount(string account)
         {
             var failedCountResponse = new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync("api/failedCounter/GetFailedCount", account).Result;
             failedCountResponse.EnsureSuccessStatusCode();
-            var failedCount = failedCountResponse.Content.ReadAsAsync<int>().Result;
+            var failedCount = failedCountResponse.Content.ReadAsAsync<string>().Result;
             return failedCount;
         }
     }

@@ -57,7 +57,7 @@ namespace DependencyInjectionWorkshop.Models
 
             #endregion
 
-            _notification.PushMessage();
+            _notification.PushMessage(account);
 
             _failedCounter.AddFailedCount(account);
 
