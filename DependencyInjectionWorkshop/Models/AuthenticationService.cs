@@ -15,6 +15,7 @@ namespace DependencyInjectionWorkshop.Models
         {
 
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
+
             var isLockedResponse = httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account).Result;
 
             isLockedResponse.EnsureSuccessStatusCode();
@@ -22,7 +23,6 @@ namespace DependencyInjectionWorkshop.Models
             {
                 throw new FailedTooManyTimesException();
             }
-
 
             string verifyPasswordFromDb;
             string verifyPasswordFromHash;
@@ -70,7 +70,16 @@ namespace DependencyInjectionWorkshop.Models
             //失敗
             var addFailedCountResponse = httpClient.PostAsJsonAsync("api/failedCounter/Add", account).Result;
             addFailedCountResponse.EnsureSuccessStatusCode();
-            
+
+
+            var failedCountResponse = httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account).Result;
+            failedCountResponse.EnsureSuccessStatusCode();
+
+            var failedCount = failedCountResponse.Content.ReadAsAsync<int>().Result;
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info($"accountId:{account} failed times:{failedCount}");
+
+
             return false;
             
         }
