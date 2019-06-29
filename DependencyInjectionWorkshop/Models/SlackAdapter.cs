@@ -2,7 +2,12 @@
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public class SlackAdapter
+    public interface INnotification
+    {
+        void PushMessage();
+    }
+
+    public class Nnotification : INnotification
     {
         public void PushMessage()
         {

@@ -7,7 +7,15 @@ using System.Threading.Tasks;
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public class FailedCountAdapter
+    public interface IFailedCountAdapter
+    {
+        void AddFailedCount(string account);
+        bool IsAccountLocked(string account);
+        void ResetFailedCount(string account);
+        int GetFailedCount(string account);
+    }
+
+    public class FailedCountAdapter : IFailedCountAdapter
     {
 
         public void AddFailedCount(string account)

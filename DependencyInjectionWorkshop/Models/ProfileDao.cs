@@ -7,7 +7,12 @@ using Dapper;
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public class ProfileDao
+    public interface IProfile
+    {
+        string GetPassword(string account);
+    }
+
+    public class Profile : IProfile
     {
         public string GetPassword(string account)
         {
