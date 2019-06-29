@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DependencyInjectionWorkshop.Models
 {
-    class FailedCountAdapter
+    public class FailedCountAdapter
     {
 
         public void AddFailedCount(string account)
