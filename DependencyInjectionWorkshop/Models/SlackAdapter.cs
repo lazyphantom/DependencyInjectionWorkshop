@@ -2,12 +2,12 @@
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public interface INnotification
+    public interface INotification
     {
         void PushMessage();
     }
 
-    public class Nnotification : INnotification
+    public class Notification : INotification
     {
         public void PushMessage()
         {
