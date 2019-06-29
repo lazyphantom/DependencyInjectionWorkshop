@@ -47,11 +47,20 @@ namespace DependencyInjectionWorkshop.Models
 
             if (otp.Equals(verifyOtp) && verifyPasswordFromDb.Equals(verifyPasswordFromHash))
             {
+                //成功
+                var resetResponse = httpClient.PostAsJsonAsync("api/failedCounter/Reset", account).Result;
+                resetResponse.EnsureSuccessStatusCode();
+
                 return true;
             }
 
             var slackClient = new SlackClient("my api token");
             slackClient.PostMessage(slackResponse => { }, "my channel", "my message", "my bot name");
+            
+            //失敗
+            var addFailedCountResponse = httpClient.PostAsJsonAsync("api/failedCounter/Add", account).Result;
+            addFailedCountResponse.EnsureSuccessStatusCode();
+            
             return false;
             
         }
