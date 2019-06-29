@@ -6,13 +6,13 @@ namespace DependencyInjectionWorkshop.Models
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
-        private readonly IFailedCountAdapter _failedCounter;
+        private readonly IFailedCounter _failedCounter;
         private readonly IOtpService _otpService;
         private readonly INnotification _notification;
         private readonly ILogger _logger;
 
         public AuthenticationService(IProfile profile, IHash hash,
-            IFailedCountAdapter failedCounter, IOtpService otpService, INnotification notification,
+            IFailedCounter failedCounter, IOtpService otpService, INnotification notification,
             ILogger logger)
         {
             _profile = profile;
@@ -27,7 +27,7 @@ namespace DependencyInjectionWorkshop.Models
         {
             _profile = new Profile();
             _hash = new Hash();
-            _failedCounter = new FailedCountAdapter();
+            _failedCounter = new FailedCounter();
             _otpService = new OtpService();
             _notification = new Nnotification();
             _logger = new NLogAdapter();
