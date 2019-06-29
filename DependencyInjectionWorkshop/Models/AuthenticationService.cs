@@ -6,18 +6,18 @@ namespace DependencyInjectionWorkshop.Models
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
-        private readonly IFailedCountAdapter _failedCountAdapter;
+        private readonly IFailedCountAdapter _failedCounter;
         private readonly IOtpService _otpService;
         private readonly INnotification _notification;
         private readonly ILogger _logger;
 
         public AuthenticationService(IProfile profile, IHash hash,
-            IFailedCountAdapter failedCountAdapter, IOtpService otpService, INnotification notification,
+            IFailedCountAdapter failedCounter, IOtpService otpService, INnotification notification,
             ILogger logger)
         {
             _profile = profile;
             _hash = hash;
-            _failedCountAdapter = failedCountAdapter;
+            _failedCounter = failedCounter;
             _otpService = otpService;
             _notification = notification;
             _logger = logger;
@@ -27,7 +27,7 @@ namespace DependencyInjectionWorkshop.Models
         {
             _profile = new Profile();
             _hash = new Hash();
-            _failedCountAdapter = new FailedCountAdapter();
+            _failedCounter = new FailedCountAdapter();
             _otpService = new OtpService();
             _notification = new Nnotification();
             _logger = new NLogAdapter();
@@ -35,7 +35,7 @@ namespace DependencyInjectionWorkshop.Models
 
         public bool Verify(string account, string password, string otp)
         {
-            var isLocked = _failedCountAdapter.IsAccountLocked(account);
+            var isLocked = _failedCounter.IsAccountLocked(account);
             if (isLocked)
             {
                 throw new FailedTooManyTimesException();
@@ -51,7 +51,7 @@ namespace DependencyInjectionWorkshop.Models
 
             if (otp.Equals(verifyOtp) && verifyPasswordFromDb.Equals(verifyPasswordFromHash))
             {
-                _failedCountAdapter.ResetFailedCount(account);
+                _failedCounter.ResetFailedCount(account);
                 return true;
             }
 
@@ -59,9 +59,9 @@ namespace DependencyInjectionWorkshop.Models
 
             _notification.PushMessage();
 
-            _failedCountAdapter.AddFailedCount(account);
+            _failedCounter.AddFailedCount(account);
 
-            var failedCount = _failedCountAdapter.GetFailedCount(account);
+            var failedCount = _failedCounter.GetFailedCount(account);
             _logger.Info($"accountId:{account} failed times:{failedCount}");
 
             return false;
