@@ -10,10 +10,11 @@ namespace DependencyInjectionWorkshop.Models
         private readonly OtpService _otpService = new OtpService();
         private readonly NLogAdapter _nLogAdapter = new NLogAdapter();
         private readonly SlackAdapter _slackAdapter = new SlackAdapter();
+        private readonly FailedCountAdapter _failedCountAdapter = new FailedCountAdapter();
 
         public bool Verify(string account, string password, string otp)
         {
-            var isLocked = _profileDao.IsAccountLocked(account);
+            var isLocked = _failedCountAdapter.IsAccountLocked(account);
             if (isLocked)
             {
                 throw new FailedTooManyTimesException();
@@ -28,16 +29,16 @@ namespace DependencyInjectionWorkshop.Models
             #region 驗證成功
             if (otp.Equals(verifyOtp) && verifyPasswordFromDb.Equals(verifyPasswordFromHash))
             {
-                _profileDao.ResetFailedCount(account);
+                _failedCountAdapter.ResetFailedCount(account);
                 return true;
             }
             #endregion
 
             _slackAdapter.PushMessage();
 
-            _profileDao.AddFailedCount(account);
+            _failedCountAdapter.AddFailedCount(account);
 
-            var failedCount = _profileDao.GetFailedCount(account);
+            var failedCount = _failedCountAdapter.GetFailedCount(account);
             _nLogAdapter.Info($"accountId:{account} failed times:{failedCount}");
 
             return false;
