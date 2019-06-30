@@ -2,13 +2,13 @@
 
 namespace DependencyInjectionWorkshop.Models
 {
-    public interface IAuthenticationService
+    public interface IAuthentication
     {
         bool Verify(string account, string password, string otp);
     }
 
 
-    public class AuthenticationService : IAuthenticationService
+    public class Authentication : IAuthentication
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
@@ -17,7 +17,7 @@ namespace DependencyInjectionWorkshop.Models
         
         private readonly ILogger _logger;
 
-        public AuthenticationService(IProfile profile, IHash hash,
+        public Authentication(IProfile profile, IHash hash,
             IFailedCounter failedCounter, IOtpService otpService,
             ILogger logger)
         {
@@ -28,7 +28,7 @@ namespace DependencyInjectionWorkshop.Models
             _logger = logger;
         }
 
-        public AuthenticationService()
+        public Authentication()
         {
             _profile = new Profile();
             _hash = new Hash();
@@ -39,11 +39,7 @@ namespace DependencyInjectionWorkshop.Models
 
         public bool Verify(string account, string password, string otp)
         {
-            var isLocked = _failedCounter.IsAccountLocked(account);
-            if (isLocked)
-            {
-                throw new FailedTooManyTimesException();
-            }
+            //FailedCounterDecorator.CheckAccountIsLocked(account, _failedCounter);
 
             var verifyPasswordFromDb = _profile.GetPassword(account);
 
@@ -55,7 +51,7 @@ namespace DependencyInjectionWorkshop.Models
 
             if (otp.Equals(verifyOtp) && verifyPasswordFromDb.Equals(verifyPasswordFromHash))
             {
-                _failedCounter.ResetFailedCount(account);
+                //ResetFailedCount(account, _failedCounter);
                 return true;
             }
 
@@ -70,5 +66,6 @@ namespace DependencyInjectionWorkshop.Models
 
             return false;
         }
+
     }
 }

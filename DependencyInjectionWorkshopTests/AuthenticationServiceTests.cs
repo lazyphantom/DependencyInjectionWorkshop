@@ -20,7 +20,7 @@ namespace DependencyInjectionWorkshopTests
         private IFailedCounter _failedCounter;
         private INotification _notification;
         private ILogger _logger;
-        private IAuthenticationService _authenticationService;
+        private IAuthentication _authentication;
 
         [SetUp]
         public void SetUp()
@@ -33,9 +33,9 @@ namespace DependencyInjectionWorkshopTests
             _notification = Substitute.For<INotification>();
             _logger = Substitute.For<ILogger>();
 
-            _authenticationService = new AuthenticationService(_profile, _hash, _failedCounter, _otpService, _logger);
-
-            _authenticationService = new NotificationDecorator(_authenticationService, _notification);
+            _authentication = new Authentication(_profile, _hash, _failedCounter, _otpService, _logger);
+            _authentication = new NotificationDecorator(_authentication, _notification);
+            _authentication = new FailedCounterDecorator(_authentication, _failedCounter);
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace DependencyInjectionWorkshopTests
         [Test]
         public void should_reset_failed_count_when_valid()
         {
-            WhenInvalid();
+            WhenValid();
             ShouldResetFailedCount(DefaultAccount);
         }
         [Test]
@@ -123,7 +123,7 @@ namespace DependencyInjectionWorkshopTests
 
         private void ShouldResetFailedCount(string account)
         {
-            _failedCounter.ResetFailedCount(account);
+            _failedCounter.Received().ResetFailedCount(account);
         }
 
         private void ShouldAddFailedCount(string account)
@@ -158,7 +158,7 @@ namespace DependencyInjectionWorkshopTests
 
         private bool WhenVerify(string account, string password, string otp)
         {
-            return _authenticationService.Verify(account, password, otp);
+            return _authentication.Verify(account, password, otp);
         }
 
         private void GivenOtp(string account, string otp)
