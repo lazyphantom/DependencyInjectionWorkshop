@@ -60,6 +60,7 @@ namespace MyConsole
              containerBuilder.RegisterDecorator<NotificationDecorator, IAuthentication>();
              containerBuilder.RegisterDecorator<FailedCounterDecorator, IAuthentication>();
              containerBuilder.RegisterDecorator<LogFailedCountDecorator, IAuthentication>();
+             containerBuilder.RegisterDecorator<LogMethodInfoDecorator, IAuthentication>();
 
              _container = containerBuilder.Build();
         }
