@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace DependencyInjectionWorkshop.Models
 {
@@ -14,9 +15,7 @@ namespace DependencyInjectionWorkshop.Models
         private readonly IHash _hash;
         private readonly IOtpService _otpService;
 
-        public Authentication(IProfile profile, IHash hash,
-            IFailedCounter failedCounter, IOtpService otpService,
-            ILogger logger)
+        public Authentication(IProfile profile, IHash hash, IOtpService otpService)
         {
             _profile = profile;
             _hash = hash;
@@ -25,8 +24,8 @@ namespace DependencyInjectionWorkshop.Models
 
         public Authentication()
         {
-            _profile = new Profile();
-            _hash = new Hash();
+            _profile = new ProfileDao();
+            _hash = new Sha256Adapter();
             _otpService = new OtpService();
         }
 
@@ -57,6 +56,11 @@ namespace DependencyInjectionWorkshop.Models
             //LogFailedCountDecorator.LogFailedCount(account, _failedCounter, _logger);
 
             return false;
+        }
+
+        public static implicit operator Authentication(NotificationDecorator v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

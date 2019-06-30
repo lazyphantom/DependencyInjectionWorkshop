@@ -7,7 +7,7 @@ namespace DependencyInjectionWorkshop.Models
         string GetHash(string password);
     }
 
-    public class Hash : IHash
+    public class Sha256Adapter : IHash
     {
         public string GetHash(string password)
         {
