@@ -12,10 +12,7 @@ namespace DependencyInjectionWorkshop.Models
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
-        private readonly IFailedCounter _failedCounter;
         private readonly IOtpService _otpService;
-        
-        private readonly ILogger _logger;
 
         public Authentication(IProfile profile, IHash hash,
             IFailedCounter failedCounter, IOtpService otpService,
@@ -23,18 +20,14 @@ namespace DependencyInjectionWorkshop.Models
         {
             _profile = profile;
             _hash = hash;
-            _failedCounter = failedCounter;
             _otpService = otpService;
-            _logger = logger;
         }
 
         public Authentication()
         {
             _profile = new Profile();
             _hash = new Hash();
-            _failedCounter = new FailedCounter();
             _otpService = new OtpService();
-            _logger = new NLogAdapter();
         }
 
         public bool Verify(string account, string password, string otp)
@@ -59,13 +52,11 @@ namespace DependencyInjectionWorkshop.Models
 
             //NotificationDecorator.VerifyWithNotification(account, _notification);
 
-            _failedCounter.AddFailedCount(account);
+            //_failedCounter.AddFailedCount(account);
 
-            var failedCount = _failedCounter.GetFailedCount(account);
-            _logger.Info($"accountId:{account} failed times:{failedCount}");
+            //LogFailedCountDecorator.LogFailedCount(account, _failedCounter, _logger);
 
             return false;
         }
-
     }
 }

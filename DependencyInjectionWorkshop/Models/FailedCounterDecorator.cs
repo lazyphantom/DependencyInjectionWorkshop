@@ -31,7 +31,17 @@
             {
                 ResetFailedCount(account);
             }
+            else
+            {
+                AddFailedCount(account);
+            }
+
             return isValid;
+        }
+
+        private void AddFailedCount(string account)
+        {
+            _failedCounter.AddFailedCount(account);
         }
     }
 }
