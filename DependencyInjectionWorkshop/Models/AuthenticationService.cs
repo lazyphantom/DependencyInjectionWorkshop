@@ -39,7 +39,7 @@ namespace DependencyInjectionWorkshop.Models
 
         public bool Verify(string account, string password, string otp)
         {
-            //FailedCounterDecorator.CheckAccountIsLocked(account, _failedCounter);
+            //BaseAuthenticationDecorator.CheckAccountIsLocked(account, _failedCounter);
 
             var verifyPasswordFromDb = _profile.GetPassword(account);
 

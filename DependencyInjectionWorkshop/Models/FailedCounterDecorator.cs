@@ -1,14 +1,12 @@
 ﻿namespace DependencyInjectionWorkshop.Models
 {
-    public class FailedCounterDecorator:IAuthentication
+    public class FailedCounterDecorator: BaseAuthenticationDecorator
     {
         private readonly IFailedCounter _failedCounter;
-        private readonly IAuthentication _authentication;
 
-        public FailedCounterDecorator(IAuthentication authentication, IFailedCounter failedCounter)
+        public FailedCounterDecorator(IAuthentication authentication, IFailedCounter failedCounter) : base(authentication)
         {
             _failedCounter = failedCounter;
-            _authentication = authentication;
         }
 
         private void CheckAccountIsLocked(string account)
@@ -25,10 +23,10 @@
             _failedCounter.ResetFailedCount(account);
         }
 
-        public bool Verify(string account, string password, string otp)
+        public override bool Verify(string account, string password, string otp)
         {
             CheckAccountIsLocked(account);
-            var isValid = _authentication.Verify(account, password, otp);
+            var isValid = base.Verify(account, password, otp);
             if (isValid)
             {
                 ResetFailedCount(account);
