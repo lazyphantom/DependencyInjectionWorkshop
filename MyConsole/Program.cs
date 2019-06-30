@@ -39,7 +39,7 @@ namespace MyConsole
 
             var authentication = _container.Resolve<IAuthentication>();
 
-            var isValid = authentication.Verify("ac", "pw", "123456");
+            var isValid = authentication.Verify("ac", "pw", "1123456");
             Console.WriteLine(isValid);
         }
 
@@ -51,7 +51,15 @@ namespace MyConsole
              containerBuilder.RegisterType<FakeProfile>().As<IProfile>();
              containerBuilder.RegisterType<FakeOtp>().As<IOtpService>();
 
+             containerBuilder.RegisterType<FakeSlack>().As<INotification>();
+             containerBuilder.RegisterType<FakeFailedCounter>().As<IFailedCounter>();
+             containerBuilder.RegisterType<ConsoleAdapter>().As<ILogger>();
+
              containerBuilder.RegisterType<AuthenticationService>().As<IAuthentication>();
+
+             containerBuilder.RegisterDecorator<NotificationDecorator, IAuthentication>();
+             containerBuilder.RegisterDecorator<FailedCounterDecorator, IAuthentication>();
+             containerBuilder.RegisterDecorator<LogFailedCountDecorator, IAuthentication>();
 
              _container = containerBuilder.Build();
         }
