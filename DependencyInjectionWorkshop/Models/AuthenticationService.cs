@@ -9,20 +9,20 @@ namespace DependencyInjectionWorkshop.Models
     }
 
 
-    public class Authentication : IAuthentication
+    public class AuthenticationService : IAuthentication
     {
         private readonly IProfile _profile;
         private readonly IHash _hash;
         private readonly IOtpService _otpService;
 
-        public Authentication(IProfile profile, IHash hash, IOtpService otpService)
+        public AuthenticationService(IProfile profile, IHash hash, IOtpService otpService)
         {
             _profile = profile;
             _hash = hash;
             _otpService = otpService;
         }
 
-        public Authentication()
+        public AuthenticationService()
         {
             _profile = new ProfileDao();
             _hash = new Sha256Adapter();
@@ -58,7 +58,7 @@ namespace DependencyInjectionWorkshop.Models
             return false;
         }
 
-        public static implicit operator Authentication(NotificationDecorator v)
+        public static implicit operator AuthenticationService(NotificationDecorator v)
         {
             throw new NotImplementedException();
         }

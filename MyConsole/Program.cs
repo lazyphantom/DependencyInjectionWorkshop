@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
 using DependencyInjectionWorkshop.Models;
 
 namespace MyConsole
 {
     class Program
     {
+        private static IContainer _container;
+
         static void Main(string[] args)
         {
+            /*
             //var profileDao = new ProfileDao();
             var profileDao = new FakeProfile();
             //var sha256Adapter = new Sha256Adapter();
@@ -25,14 +29,31 @@ namespace MyConsole
             //var nLogAdapter = new NLogAdapter();
             var nLogAdapter = new ConsoleAdapter();
 
-            var authentication = new Authentication(profileDao, sha256Adapter, otpService);
+            var authentication = new AuthenticationService(profileDao, sha256Adapter, otpService);
 
             var notificationDecorator = new NotificationDecorator(authentication, notification);
             var failedCounterDecorator = new FailedCounterDecorator(notificationDecorator, failedCounter);
             var logFailedCountDecorator = new LogFailedCountDecorator(failedCounterDecorator, failedCounter, nLogAdapter);
+            */
+            RegisterContainer();
 
-            var isValid = logFailedCountDecorator.Verify("", "", "123456");
+            var authentication = _container.Resolve<IAuthentication>();
+
+            var isValid = authentication.Verify("ac", "pw", "123456");
             Console.WriteLine(isValid);
+        }
+
+        private static void RegisterContainer()
+        {
+             var containerBuilder = new ContainerBuilder();
+
+             containerBuilder.RegisterType<FakeHash>().As<IHash>();
+             containerBuilder.RegisterType<FakeProfile>().As<IProfile>();
+             containerBuilder.RegisterType<FakeOtp>().As<IOtpService>();
+
+             containerBuilder.RegisterType<AuthenticationService>().As<IAuthentication>();
+
+             _container = containerBuilder.Build();
         }
     }
 
